@@ -1,11 +1,7 @@
 const mongoose = require("mongoose")
 
 const student_model = new mongoose.Schema({
-  id: {
-    type: String,
-    required: true,
-    unique: true
-  },
+
   username: {
     type: String,
     required: true

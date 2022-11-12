@@ -1,11 +1,7 @@
 const mongoose = require("mongoose")
 
 const matter_model = new mongoose.Schema({
-  id: {
-    type: String,
-    required: true,
-    unique: true
-  },
+
   name: {
     type: String,
     required: true

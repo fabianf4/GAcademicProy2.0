@@ -1,11 +1,7 @@
 const mongoose = require("mongoose")
 
 const activity_model = new mongoose.Schema({
-    id: {
-        type: String,
-        required: true,
-        unique: true
-    },
+
     description: {
         type: String,
         required: true
