@@ -6,7 +6,7 @@ const matter_controller = {
     addMatter: async (req, res) => {
         const matter = new matter_model(req.body)
         if(!req.body.idStudent){
-            return res.status(400).send()
+            return res.status(400).send({error: "idStudent es requerido"})
         }
         try {
             await matter.save()

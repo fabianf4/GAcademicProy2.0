@@ -6,9 +6,20 @@ const activity_controller = {
     addActivity: async (req, res) => {
         const activity = new activity_model(req.body)
         if(!req.body.idMatter){
-            return res.status(400).send()
+            return res.status(400).send({error: "idMatter es requerido"})
         }
         try {
+            const {activities} = await matter_model.findById(req.body.idMatter).populate("activities")
+
+            let percentage = 0
+            activities.forEach((activity) => {
+                percentage += activity.percentage
+            })
+
+            if(percentage + req.body.percentage > 100){
+                return res.status(400).send({error: "El porcentaje de la actividad es mayor al porcentaje disponible"})
+            }
+
             const activitySave = await activity.save()
 
             await matter_model.findByIdAndUpdate(req.body.idMatter, {
