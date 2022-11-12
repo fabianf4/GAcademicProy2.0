@@ -5,17 +5,17 @@ const activity_controller = {
     // body = idMatter = id de la materia
     addActivity: async (req, res) => {
         const activity = new activity_model(req.body)
+        if(!req.body.idMatter){
+            return res.status(400).send()
+        }
         try {
             const activitySave = await activity.save()
 
-            await matter_model.findByIdAndUpdate(
-                req.body.idMatter,
-                {
-                    $push: {
-                        activities: activitySave._id
-                    }
+            await matter_model.findByIdAndUpdate(req.body.idMatter, {
+                $push: {
+                    activities: activitySave._id
                 }
-            )
+            })
             res.status(201).send(activitySave)
         } catch (e) {
             res.status(500).send(e)
@@ -32,14 +32,11 @@ const activity_controller = {
                 return res.status(404).send()
             }
 
-            await matter_model.findByIdAndUpdate(
-                req.body.idMatter,
-                {
-                    $pull: {
-                        activities: req.params.id
-                    }
+            await matter_model.findByIdAndUpdate(req.body.idMatter, {
+                $pull: {
+                    activities: req.params.id
                 }
-            )
+            })
 
             res.status(200).send(activity)
         } catch (e) {
@@ -57,6 +54,20 @@ const activity_controller = {
                 return res.status(404).send()
             }
             res.status(200).send(activity)
+        } catch (e) {
+            res.status(500).send(e)
+        }
+    },
+    // params = id de la materia
+    getActivityByMatter: async (req, res) => {
+        try {
+            const matter = await matter_model
+                .findById(req.params.id)
+                .populate("activities")
+            if (!matter) {
+                return res.status(404).send()
+            }
+            res.send(matter)
         } catch (e) {
             res.status(500).send(e)
         }
