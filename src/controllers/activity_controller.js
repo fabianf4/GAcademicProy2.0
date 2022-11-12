@@ -1,0 +1,66 @@
+const activity_model = require("../models/activity_model")
+const matter_model = require("../models/matter_model")
+
+const activity_controller = {
+    // body = idMatter = id de la materia
+    addActivity: async (req, res) => {
+        const activity = new activity_model(req.body)
+        try {
+            const activitySave = await activity.save()
+
+            await matter_model.findByIdAndUpdate(
+                req.body.idMatter,
+                {
+                    $push: {
+                        activities: activitySave._id
+                    }
+                }
+            )
+            res.status(201).send(activitySave)
+        } catch (e) {
+            res.status(500).send(e)
+        }
+    },
+    // params = id de la actividad
+    // body = idMatter = id de la materia
+    deleteActivity: async (req, res) => {
+        try {
+            const activity = await activity_model.findByIdAndDelete(
+                req.params.id
+            )
+            if (!activity) {
+                return res.status(404).send()
+            }
+
+            await matter_model.findByIdAndUpdate(
+                req.body.idMatter,
+                {
+                    $pull: {
+                        activities: req.params.id
+                    }
+                }
+            )
+
+            res.status(200).send(activity)
+        } catch (e) {
+            res.status(500).send(e)
+        }
+    },
+    // params = id de la actividad
+    updateActivity: async (req, res) => {
+        try {
+            const activity = await activity_model.findByIdAndUpdate(
+                req.params.id,
+                req.body
+            )
+            if (!activity) {
+                return res.status(404).send()
+            }
+            res.status(200).send(activity)
+        } catch (e) {
+            res.status(500).send(e)
+        }
+    }
+}
+
+module.exports = activity_controller
