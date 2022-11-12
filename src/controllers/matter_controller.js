@@ -5,6 +5,9 @@ const matter_controller = {
     // body = idStudent = id del estudiante
     addMatter: async (req, res) => {
         const matter = new matter_model(req.body)
+        if(!req.body.idStudent){
+            return res.status(400).send()
+        }
         try {
             await matter.save()
 
@@ -22,6 +25,7 @@ const matter_controller = {
             res.status(500).send(e)
         }
     },
+    // params = id del estudiante
     getMattersByStudent: async (req, res) => {
         try {
             const student = await student_model
