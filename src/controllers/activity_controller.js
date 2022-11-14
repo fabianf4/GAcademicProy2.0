@@ -16,7 +16,7 @@ const activity_controller = {
                 percentage += activity.percentage
             })
 
-            if(percentage + req.body.percentage > 100){
+            if(parseFloat(percentage) + parseFloat(req.body.percentage) > 100){
                 return res.status(400).send({error: "El porcentaje de la actividad es mayor al porcentaje disponible"})
             }
 
